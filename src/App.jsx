@@ -12,14 +12,14 @@ import LoginPage from './screens/LoginPage';
 import RegisterPage from './screens/RegisterPage';
 import AdminPage from './screens/AdminPage';
 
-const Layout = () => (
+const Layout = () => ( 
   <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
     <Header />
     <main style={{ flex: 1 }}>
       <Outlet />
     </main> 
     <Footer />
-  </div> 
+  </div>  
 );
  
 const AppInitializer = () => {

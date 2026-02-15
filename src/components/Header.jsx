@@ -1,4 +1,5 @@
 
+import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,6 +11,16 @@ const Header = () => {
   const navigate = useNavigate();
   const { user, token } = useSelector((state) => state.auth);
   const { wishlists } = useSelector((state) => state.wishlist);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -18,7 +29,7 @@ const Header = () => {
 
   // Aesthetic Theme Colors
   const THEME = {
-    navBg: '#2d5016', // Deep Forest Green
+    navBg: '#5fde0b', // Deep Forest Green
     text: '#ffffff',
     textMuted: 'rgba(255, 255, 255, 0.75)',
     accent: '#9bbb7a',
@@ -28,11 +39,14 @@ const Header = () => {
   return (
     <Navbar 
       expand="lg" 
-      sticky="top" 
       className="shadow-sm py-3" 
       style={{ 
-        backgroundColor: THEME.navBg, 
-        borderBottom: '1px solid rgba(255,255,255,0.1)' 
+        backgroundColor: isScrolled ? THEME.navBg : 'rgba(45, 80, 22, 0.3)',
+        backdropFilter: isScrolled ? 'none' : 'blur(10px)',
+        borderBottom: '1px solid rgba(255,255,255,0.1)',
+        transition: 'all 0.3s ease',
+        position: 'relative',
+        zIndex: 100
       }}
     >
       <Container>

@@ -20,12 +20,25 @@ import {
 } from '../slices/wishlistSlice';
 import { productAPI, wishlistAPI } from '../utils/api';
 
+const HERO_BG = 'https://chronic-plum-6ozopdtaef.edgeone.app/pexels-kindelmedia-7667829.jpg';
+
 const ProductListPage = () => {
   const dispatch = useDispatch();
   const { products, loading, error, filters } = useSelector((state) => state.products);
   const { token } = useSelector((state) => state.auth);
   const { wishlists } = useSelector((state) => state.wishlist);
   const [wishlistIds, setWishlistIds] = useState([]);
+  const [scrollY, setScrollY] = useState(0);
+
+  // Parallax scroll listener
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Fetch products
   useEffect(() => {
@@ -99,13 +112,74 @@ const ProductListPage = () => {
   };
 
   return (
-    <Container fluid className="py-4">
-      <div className="mb-5">
-        <h1 className="mb-2">Cannabis Product Discovery</h1>
-        <p style={{ color: '#666' }}>
-          Browse our collection of premium cannabis products across multiple categories
-        </p>
+    <>
+      {/* Parallax Hero Section */}
+      <div
+        style={{
+          position: 'relative',
+          height: '400px',
+          overflow: 'hidden',
+          marginBottom: '50px',
+        }}
+      >
+        {/* Background image with parallax effect */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundImage: `url(${HERO_BG})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            transform: `translateY(${scrollY * 0.5}px)`,
+            zIndex: 1,
+          }}
+        />
+
+        {/* Dark overlay */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 2,
+          }}
+        />
+
+        {/* Hero content */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            color: 'white',
+            textAlign: 'center',
+            zIndex: 3,
+            transform: `translateY(${scrollY * 0.3}px)`,
+          }}
+        >
+          <h1 style={{ fontSize: '3.5rem', fontWeight: 'bold', marginBottom: '10px' , color:"white"}}>
+            Cannabis Product Discovery
+          </h1>
+          <p style={{ fontSize: '1.3rem', color: '#ddd' }}>
+            Browse our collection of premium cannabis products
+          </p>
+        </div>
       </div>
+
+      {/* Main content */}
+      <Container fluid className="py-4">
 
       <FilterSection
         filters={filters}
@@ -144,7 +218,8 @@ const ProductListPage = () => {
           )}
         </>
       )}
-    </Container>
+      </Container>
+    </>
   );
 };
 
