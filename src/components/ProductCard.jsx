@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card, Button, Badge } from 'react-bootstrap';
+import { Card, Badge } from 'react-bootstrap';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const THEME = {
   primary: '#2d5016', // Deep Forest Green
@@ -13,6 +13,21 @@ const THEME = {
 };
 
 const ProductCard = ({ product, isInWishlist, onAddWishlist, onRemoveWishlist, showWishlistBtn = true }) => {
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate(`/product/${product._id}`);
+  };
+
+  const handleWishlistClick = (e) => {
+    e.stopPropagation();
+    if (isInWishlist) {
+      onRemoveWishlist(product._id);
+    } else {
+      onAddWishlist(product._id);
+    }
+  };
+
   return (
     <Card 
       className="h-100 border-0 shadow-sm transition-all" 
@@ -20,8 +35,10 @@ const ProductCard = ({ product, isInWishlist, onAddWishlist, onRemoveWishlist, s
         borderRadius: '16px', 
         background: THEME.cardBg,
         overflow: 'hidden',
-        transition: 'transform 0.2s ease-in-out'
+        transition: 'transform 0.2s ease-in-out',
+        cursor: 'pointer'
       }}
+      onClick={handleCardClick}
       onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
       onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
     >
@@ -43,14 +60,21 @@ const ProductCard = ({ product, isInWishlist, onAddWishlist, onRemoveWishlist, s
               right: '12px',
               backgroundColor: 'rgba(255, 255, 255, 0.9)',
               borderRadius: '50%',
-              padding: '2px'
+              padding: '2px',
+              cursor: 'pointer'
             }}
           >
-            <Button
-              variant="link"
+            <button
               className="p-2 d-flex align-items-center justify-content-center"
-              style={{ textDecoration: 'none', fontSize: '1.1rem' }}
-              onClick={() => (isInWishlist ? onRemoveWishlist(product._id) : onAddWishlist(product._id))}
+              style={{ 
+                textDecoration: 'none', 
+                fontSize: '1.1rem',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '8px'
+              }}
+              onClick={handleWishlistClick}
               aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
             >
               {isInWishlist ? (
@@ -58,7 +82,7 @@ const ProductCard = ({ product, isInWishlist, onAddWishlist, onRemoveWishlist, s
               ) : (
                 <FaRegHeart style={{ color: THEME.primary }} />
               )}
-            </Button>
+            </button>
           </div>
         )}
 
@@ -117,28 +141,11 @@ const ProductCard = ({ product, isInWishlist, onAddWishlist, onRemoveWishlist, s
           </div>
         </div>
 
-        <div className="mt-auto d-flex justify-content-between align-items-center">
-          <div>
-            <span style={{ fontSize: '0.8rem', color: THEME.mutedText, display: 'block' }}>Price</span>
-            <h4 style={{ color: THEME.price, margin: 0, fontWeight: 800 }}>
-              ${product.price.toFixed(2)}
-            </h4>
-          </div>
-          
-          <Link to={`/product/${product._id}`}>
-            <Button 
-              style={{ 
-                background: THEME.primary, 
-                borderColor: THEME.primary,
-                borderRadius: '8px',
-                padding: '8px 16px',
-                fontWeight: '600'
-              }} 
-              size="sm"
-            >
-              Details
-            </Button>
-          </Link>
+        <div className="mt-auto">
+          <span style={{ fontSize: '0.8rem', color: THEME.mutedText, display: 'block' }}>Price</span>
+          <h4 style={{ color: THEME.price, margin: 0, fontWeight: 800 }}>
+            ${product.price.toFixed(2)}
+          </h4>
         </div>
       </Card.Body>
     </Card>
