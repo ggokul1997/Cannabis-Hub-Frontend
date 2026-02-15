@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Form, Button, Card, Alert, Table } from 'react-bootstrap';
+import { Container, Form, Button, Card, Alert, Table, Spinner } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ErrorMessage, LoadingSpinner } from '../components/LoadingError';
 import { productAPI } from '../utils/api';
 
 const AdminPage = () => {
-  const { user, token } = useSelector((state) => state.auth);
+  const { user, token, loading: authLoading } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -28,6 +28,16 @@ const AdminPage = () => {
   const [products, setProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(false);
   const [editingId, setEditingId] = useState(null);
+
+  if (authLoading) {
+    return (
+      <Container className="py-5 text-center">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </Container>
+    );
+  }
 
   if (!token || user?.role !== 'admin') {
     return (
