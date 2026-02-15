@@ -20,6 +20,7 @@ const AdminPage = () => {
     thc: '',
     cbd: '',
     price: '',
+    image: '',
     effects: '',
     usageType: 'Smoking',
     stock: '',
@@ -90,6 +91,7 @@ const AdminPage = () => {
         thc: '',
         cbd: '',
         price: '',
+        image: '',
         effects: '',
         usageType: 'Smoking',
         stock: '',
@@ -136,6 +138,7 @@ const AdminPage = () => {
       thc: product.thc ?? '',
       cbd: product.cbd ?? '',
       price: product.price ?? '',
+      image: product.image || '',
       effects: (product.effects || []).join(', '),
       usageType: product.usageType || 'Smoking',
       stock: product.stock ?? '',
@@ -204,6 +207,33 @@ const AdminPage = () => {
                   onChange={handleInputChange}
                   required
                 />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Image URL</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="image"
+                  placeholder="Enter image URL (optional)"
+                  value={formData.image}
+                  onChange={handleInputChange}
+                />
+                {formData.image && (
+                  <img
+                    src={formData.image}
+                    alt="Preview"
+                    style={{
+                      marginTop: '10px',
+                      maxWidth: '200px',
+                      maxHeight: '200px',
+                      borderRadius: '4px',
+                      border: '1px solid #ddd',
+                    }}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                )}
               </Form.Group>
 
               <div className="row">
@@ -362,7 +392,14 @@ const AdminPage = () => {
                 {products.map((p) => (
                   <tr key={p._id}>
                     <td style={{ width: 120 }}>
-                      <img src={p.image} alt={p.name} style={{ width: 100, height: 60, objectFit: 'cover', borderRadius: 6 }} />
+                      <img
+                        src={p.image}
+                        alt={p.name}
+                        style={{ width: 100, height: 60, objectFit: 'cover', borderRadius: 6 }}
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
                     </td>
                     <td>{p.name}</td>
                     <td>{p.category}</td>
